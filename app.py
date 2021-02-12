@@ -10,14 +10,14 @@ from datetime import datetime
 import json
 
 #Define app
-application = Flask(__name__)
+app = Flask(__name__)
 
 #Add CORS
-cors = CORS(application)
-application.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 #Creat app route for training datasheets
-@application.route('/auth', methods=['POST'])
+@app.route('/auth', methods=['POST'])
 @cross_origin()
 
 def getAuth():
@@ -43,7 +43,7 @@ def getAuth():
 	return resp.text
 
 #Creat app route for chatting with bot
-@application.route('/chat', methods=['POST'])
+@app.route('/chat', methods=['POST'])
 @cross_origin()
 
 def getMessage():
@@ -163,4 +163,4 @@ def getMessage():
 
 
 if __name__ == '__main__':
-	application.run(debug=False, threaded=True)
+	app.run(debug=False, threaded=True)
