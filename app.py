@@ -16,7 +16,7 @@ app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-client = pymongo()
+client = pymongo.MongoClient("mongodb+srv://dbUser:deUserPassword@Stella@uwc-ca.7fijl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 #Creat app route for training datasheets
 @app.route('/auth', methods=['POST'])
