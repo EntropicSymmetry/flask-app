@@ -7,7 +7,7 @@ from flask import Flask
 from flask import  request, redirect, url_for, flash, jsonify, Response, make_response
 from flask_cors import CORS, cross_origin
 from datetime import datetime
-import json
+import json, pymongo
 
 #Define app
 app = Flask(__name__)
@@ -15,6 +15,8 @@ app = Flask(__name__)
 #Add CORS
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+
+client = pymongo()
 
 #Creat app route for training datasheets
 @app.route('/auth', methods=['POST'])
@@ -124,6 +126,10 @@ def getMessage():
 	print(resp_metadata.json())
 
 	if bool(resp_metadata.json()['latest_message']['intent'])==True:
+		
+		#Store in mongo
+		client.Stella.KeyWords.update_one({"_id":sender_id}, {"$push":{"intentList":resp_metadata.json()['latest_message']['intent']})
+		
 		myIntent = resp_metadata.json()['latest_message']['intent']['name']
 		if myIntent == 'Gen_Depression':
 			resp_to_return = getFirstQuestion('PHQuestions')
