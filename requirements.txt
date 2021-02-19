@@ -5,3 +5,4 @@ flask-cors
 pandas
 numpy==1.18.5
 requests
+pymongo
