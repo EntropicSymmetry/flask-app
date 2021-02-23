@@ -8,6 +8,12 @@ from flask import  request, redirect, url_for, flash, jsonify, Response, make_re
 from flask_cors import CORS, cross_origin
 from datetime import datetime
 import json, pymongo
+import datefinder
+
+
+def regexForDates(st):
+    regexChecks = ["|/A_z?1_10/|"]
+    return list(datefinder.find_dates(st))
 
 #Define app
 app = Flask(__name__)
@@ -60,7 +66,7 @@ def getMessage():
 
 	url = "http://stella.unitedwecare.ca/api/conversations/"+senderID+"/messages?environment=production"
 	#url = "http://stella.unitedwecare.ca/api/chat"
-
+	
 	headers = CaseInsensitiveDict()
 	headers["Authorization"] = "Bearer "+data['bearer_token']
 	headers["Content-Type"] = "application/json"
@@ -126,7 +132,9 @@ def getMessage():
 	print(resp_metadata.json())
 
 	if bool(resp_metadata.json()['latest_message']['intent'])==True:
-		
+		dateListRecord = regexForDates(str(resp_metadata.json()['latest_message']))
+		if bool(dateListRecord) == True:
+			client.Stella.KeyWords.update_one({"_id":sender_id}, {"$push":{"recordDateList":dateListRecord}})
 		#Store in mongo
 		client.Stella.KeyWords.update_one({"_id":sender_id}, {"$push":{"intentList":resp_metadata.json()['latest_message']['intent']})
 		
